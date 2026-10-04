@@ -129,14 +129,12 @@ void destroyPieceClause(PieceClause * pieceClause) {
 	if (pieceClause != NULL) {
 		switch (pieceClause->type) {
 			case ATTACKS_CLAUSE:
-				destroyMoveTerm(pieceClause->attackAlternatives);
+			case MOVES_CLAUSE:
+				destroyMoveTerm(pieceClause->alternatives);
 				break;
 			case HEALTH_CLAUSE:
 			case ROYAL_CLAUSE:
 			case VALUE_CLAUSE:
-				break;
-			case MOVES_CLAUSE:
-				destroyMoveTerm(pieceClause->moveAlternatives);
 				break;
 			case PROMOTE_CLAUSE:
 				free(pieceClause->promotedPiece);

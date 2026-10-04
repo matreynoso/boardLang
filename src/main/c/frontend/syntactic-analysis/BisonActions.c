@@ -251,21 +251,17 @@ PieceClause * AmountPieceClauseSemanticAction(const PieceClauseType type, const 
 	return pieceClause;
 }
 
-PieceClause * AttacksPieceClauseSemanticAction(MoveTerm * alternatives, const bool hasDamage, const signed int damage) {
+PieceClause * AttacksPieceClauseSemanticAction(MoveTerm * alternatives) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	PieceClause * pieceClause = _createPieceClause(ATTACKS_CLAUSE);
-	pieceClause->attackAlternatives = alternatives;
-	pieceClause->hasDamage = hasDamage;
-	pieceClause->damage = damage;
+	pieceClause->alternatives = alternatives;
 	return pieceClause;
 }
 
-PieceClause * MovesPieceClauseSemanticAction(MoveTerm * alternatives, const ReplaceMode replaceMode, const bool firstMove) {
+PieceClause * MovesPieceClauseSemanticAction(MoveTerm * alternatives) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	PieceClause * pieceClause = _createPieceClause(MOVES_CLAUSE);
-	pieceClause->moveAlternatives = alternatives;
-	pieceClause->replaceMode = replaceMode;
-	pieceClause->firstMove = firstMove;
+	pieceClause->alternatives = alternatives;
 	return pieceClause;
 }
 
@@ -290,10 +286,21 @@ Region * RegionSemanticAction(const RegionType type, Position * position) {
 	return region;
 }
 
-MoveTerm * MoveTermSemanticAction(MoveStep * steps) {
+MoveTerm * AttackAlternativeSemanticAction(MoveStep * steps, const bool hasDamage, const signed int damage) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	MoveTerm * moveTerm = calloc(1, sizeof(MoveTerm));
 	moveTerm->steps = steps;
+	moveTerm->hasDamage = hasDamage;
+	moveTerm->damage = damage;
+	return moveTerm;
+}
+
+MoveTerm * MoveAlternativeSemanticAction(MoveStep * steps, const ReplaceMode replaceMode, const bool firstMove) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	MoveTerm * moveTerm = calloc(1, sizeof(MoveTerm));
+	moveTerm->steps = steps;
+	moveTerm->replaceMode = replaceMode;
+	moveTerm->firstMove = firstMove;
 	return moveTerm;
 }
 

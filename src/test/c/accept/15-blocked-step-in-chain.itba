@@ -5,9 +5,9 @@ game {
 }
 
 piece caballo {
-  moves: blocked 1 front straight & 1 front diagonal,
-         blocked 1 back straight & 1 back diagonal,
-         blocked 1 left straight & 1 left diagonal,
+  moves: blocked 1 front straight & 1 front diagonal can replace,
+         blocked 1 back straight & 1 back diagonal can replace,
+         blocked 1 left straight & 1 left diagonal can replace,
          blocked 1 right straight & 1 right diagonal can replace
 }
 

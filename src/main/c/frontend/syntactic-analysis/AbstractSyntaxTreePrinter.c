@@ -34,7 +34,7 @@ static void _printGame(const unsigned int level, Game * game);
 static void _printGameField(const unsigned int level, GameField * gameField);
 static void _printIndentation(const unsigned int level);
 static void _printLine(const unsigned int level, const char * const format, ...);
-static void _printMoveTerms(const unsigned int level, MoveTerm * moveTerm);
+static void _printMoveTerms(const unsigned int level, const PieceClauseType clauseType, MoveTerm * moveTerm);
 static void _printOrientations(const unsigned int orientations);
 static void _printPiece(const unsigned int level, Piece * piece);
 static void _printPieceClause(const unsigned int level, PieceClause * pieceClause);
@@ -208,11 +208,22 @@ static void _printLine(const unsigned int level, const char * const format, ...)
 }
 
 /**
- * Prints the alternatives of a move expression, and the steps of each one.
+ * Prints the alternatives of a move expression, with their own modifiers, and
+ * the steps of each one.
  */
-static void _printMoveTerms(const unsigned int level, MoveTerm * moveTerm) {
+static void _printMoveTerms(const unsigned int level, const PieceClauseType clauseType, MoveTerm * moveTerm) {
 	for (; moveTerm != NULL; moveTerm = moveTerm->next) {
-		_printLine(level, "Alternative");
+		if (clauseType == MOVES_CLAUSE) {
+			_printLine(level, "Alternative (replace: %s, first move: %s)",
+				_replaceModeToString(moveTerm->replaceMode),
+				moveTerm->firstMove ? "yes" : "no");
+		}
+		else if (moveTerm->hasDamage) {
+			_printLine(level, "Alternative (damage: %d)", moveTerm->damage);
+		}
+		else {
+			_printLine(level, "Alternative (damage: unspecified)");
+		}
 		for (MoveStep * moveStep = moveTerm->steps; moveStep != NULL; moveStep = moveStep->next) {
 			_printIndentation(1 + level);
 			printf("Step: block=%s, distances=", _blockModeToString(moveStep->blockMode));
@@ -261,22 +272,15 @@ static void _printPieceClause(const unsigned int level, PieceClause * pieceClaus
 	for (; pieceClause != NULL; pieceClause = pieceClause->next) {
 		switch (pieceClause->type) {
 			case ATTACKS_CLAUSE:
-				if (pieceClause->hasDamage) {
-					_printLine(level, "Attacks (damage: %d)", pieceClause->damage);
-				}
-				else {
-					_printLine(level, "Attacks (damage: unspecified)");
-				}
-				_printMoveTerms(1 + level, pieceClause->attackAlternatives);
+				_printLine(level, "Attacks");
+				_printMoveTerms(1 + level, ATTACKS_CLAUSE, pieceClause->alternatives);
 				break;
 			case HEALTH_CLAUSE:
 				_printLine(level, "Health: %d", pieceClause->amount);
 				break;
 			case MOVES_CLAUSE:
-				_printLine(level, "Moves (replace: %s, first move: %s)",
-					_replaceModeToString(pieceClause->replaceMode),
-					pieceClause->firstMove ? "yes" : "no");
-				_printMoveTerms(1 + level, pieceClause->moveAlternatives);
+				_printLine(level, "Moves");
+				_printMoveTerms(1 + level, MOVES_CLAUSE, pieceClause->alternatives);
 				break;
 			case PROMOTE_CLAUSE:
 				_printIndentation(level);

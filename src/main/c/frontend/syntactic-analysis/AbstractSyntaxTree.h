@@ -193,9 +193,18 @@ struct MoveStep {
 	MoveStep * next;
 };
 
-/** One alternative of a move expression (the operands of ","). */
+/**
+ * One alternative of a move expression (the operands of ","). Each
+ * alternative has its own modifiers.
+ */
 struct MoveTerm {
 	MoveStep * steps;
+	/** Only in "moves" clauses. */
+	ReplaceMode replaceMode;
+	bool firstMove;
+	/** Only in "attacks" clauses. */
+	bool hasDamage;
+	signed int damage;
 	MoveTerm * next;
 };
 
@@ -207,18 +216,8 @@ struct Region {
 struct PieceClause {
 	PieceClauseType type;
 	union {
-		/** MOVES_CLAUSE. */
-		struct {
-			MoveTerm * moveAlternatives;
-			ReplaceMode replaceMode;
-			bool firstMove;
-		};
-		/** ATTACKS_CLAUSE. */
-		struct {
-			MoveTerm * attackAlternatives;
-			bool hasDamage;
-			signed int damage;
-		};
+		/** MOVES_CLAUSE and ATTACKS_CLAUSE. */
+		MoveTerm * alternatives;
 		/** PROMOTE_CLAUSE. */
 		struct {
 			char * promotedPiece;

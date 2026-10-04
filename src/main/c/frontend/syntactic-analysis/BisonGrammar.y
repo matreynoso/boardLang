@@ -203,7 +203,7 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %type <pieceClause> piece_clauses piece_clause
 %type <replaceMode> replace_mode
 %type <region> region
-%type <moveTerm> move_alternatives move_term
+%type <moveTerm> move_alternatives move_alternative attack_alternatives attack_alternative
 %type <moveStep> move_steps move_step direction
 %type <blockMode> block_mode
 %type <distance> distance_set distance_list distance
@@ -301,9 +301,8 @@ piece_clauses: %empty															{ $$ = NULL; }
 	| piece_clause piece_clauses												{ $$ = LinkPieceClauseSemanticAction($1, $2); }
 	;
 
-piece_clause: MOVES COLON move_alternatives replace_mode first_move_option		{ $$ = MovesPieceClauseSemanticAction($3, $4, $5); }
-	| ATTACKS COLON move_alternatives											{ $$ = AttacksPieceClauseSemanticAction($3, false, 0); }
-	| ATTACKS COLON move_alternatives DAMAGE INTEGER							{ $$ = AttacksPieceClauseSemanticAction($3, true, $5); }
+piece_clause: MOVES COLON move_alternatives									{ $$ = MovesPieceClauseSemanticAction($3); }
+	| ATTACKS COLON attack_alternatives											{ $$ = AttacksPieceClauseSemanticAction($3); }
 	| PROMOTE COLON IDENTIFIER AT region										{ $$ = PromotePieceClauseSemanticAction($3, $5); }
 	| VALUE COLON INTEGER														{ $$ = AmountPieceClauseSemanticAction(VALUE_CLAUSE, $3); }
 	| HEALTH COLON INTEGER														{ $$ = AmountPieceClauseSemanticAction(HEALTH_CLAUSE, $3); }
@@ -327,11 +326,24 @@ region: LAST ROW																{ $$ = RegionSemanticAction(REGION_LAST_ROW, NUL
 
 /* ---------- Move geometry: "," (alternatives) > "&" (chain) > "|" (sets) ---------- */
 
-move_alternatives: move_term													{ $$ = $1; }
-	| move_term COMMA move_alternatives											{ $$ = LinkMoveTermSemanticAction($1, $3); }
+/*
+ * Every alternative (the operands of ",") has its own modifiers: a replace
+ * mode and "first move" in a "moves" clause, and a damage in an "attacks"
+ * clause.
+ */
+move_alternatives: move_alternative												{ $$ = $1; }
+	| move_alternative COMMA move_alternatives									{ $$ = LinkMoveTermSemanticAction($1, $3); }
 	;
 
-move_term: move_steps															{ $$ = MoveTermSemanticAction($1); }
+move_alternative: move_steps replace_mode first_move_option						{ $$ = MoveAlternativeSemanticAction($1, $2, $3); }
+	;
+
+attack_alternatives: attack_alternative											{ $$ = $1; }
+	| attack_alternative COMMA attack_alternatives								{ $$ = LinkMoveTermSemanticAction($1, $3); }
+	;
+
+attack_alternative: move_steps													{ $$ = AttackAlternativeSemanticAction($1, false, 0); }
+	| move_steps DAMAGE INTEGER													{ $$ = AttackAlternativeSemanticAction($1, true, $3); }
 	;
 
 move_steps: move_step															{ $$ = $1; }

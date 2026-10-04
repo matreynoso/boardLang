@@ -47,12 +47,13 @@ WinCondition * ReachPositionWinConditionSemanticAction(Position * position, char
 
 Piece * PieceSemanticAction(char * name, PieceClause * clauses);
 PieceClause * AmountPieceClauseSemanticAction(const PieceClauseType type, const signed int amount);
-PieceClause * AttacksPieceClauseSemanticAction(MoveTerm * alternatives, const bool hasDamage, const signed int damage);
-PieceClause * MovesPieceClauseSemanticAction(MoveTerm * alternatives, const ReplaceMode replaceMode, const bool firstMove);
+PieceClause * AttacksPieceClauseSemanticAction(MoveTerm * alternatives);
+PieceClause * MovesPieceClauseSemanticAction(MoveTerm * alternatives);
 PieceClause * PromotePieceClauseSemanticAction(char * promotedPiece, Region * region);
 PieceClause * RoyalPieceClauseSemanticAction();
 Region * RegionSemanticAction(const RegionType type, Position * position);
-MoveTerm * MoveTermSemanticAction(MoveStep * steps);
+MoveTerm * AttackAlternativeSemanticAction(MoveStep * steps, const bool hasDamage, const signed int damage);
+MoveTerm * MoveAlternativeSemanticAction(MoveStep * steps, const ReplaceMode replaceMode, const bool firstMove);
 MoveStep * DirectionSemanticAction(const unsigned int orientations, const unsigned int bases);
 MoveStep * MoveStepSemanticAction(const BlockMode blockMode, Distance * distances, MoveStep * direction);
 Distance * FiniteDistanceSemanticAction(const signed int value, const bool only);

@@ -5,7 +5,7 @@ game {
 }
 
 piece caballo {
-  moves: 2 only (front|back) straight & 1 (left|right) straight,
+  moves: 2 only (front|back) straight & 1 (left|right) straight can replace,
          2 only (left|right) straight & 1 (front|back) straight can replace
 }
 

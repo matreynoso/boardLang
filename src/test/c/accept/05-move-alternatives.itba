@@ -5,7 +5,7 @@ game {
 }
 
 piece dama {
-  moves: inf straight, inf diagonal can replace
+  moves: inf straight can replace, inf diagonal can replace
 }
 
 player rojo { dama at d1 }

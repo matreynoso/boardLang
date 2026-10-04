@@ -5,9 +5,7 @@ game {
 }
 
 piece peon {
-  moves: 1 front straight
-  moves: 2 only front straight first move
-  moves: 1 front diagonal must replace
+  moves: 1 front straight, 2 only front straight first move, 1 front diagonal must replace
 }
 
 player rojo { peon at a2, b2 }

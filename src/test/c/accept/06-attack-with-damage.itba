@@ -7,7 +7,7 @@ game {
 piece catapulta {
   health: 3
   moves: 1 straight
-  attacks: unblocked 3 only (straight|diagonal) damage 2
+  attacks: unblocked 3 only (straight|diagonal) damage 2, 1 straight
 }
 
 player rojo { catapulta at a1 }
