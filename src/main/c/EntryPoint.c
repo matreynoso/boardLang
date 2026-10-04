@@ -1,6 +1,7 @@
 #include "backend/code-generation/Generator.h"
 #include "frontend/Frontend.h"
 #include "frontend/lexical-analysis/FlexActions.h"
+#include "frontend/syntactic-analysis/AbstractSyntaxTreePrinter.h"
 #include "frontend/syntactic-analysis/BisonActions.h"
 #include "support/logging/Logger.h"
 #include "support/type/CompilationStatus.h"
@@ -23,6 +24,7 @@ const int main(const int length, const char ** arguments) {
 	};
 	ModuleDestructor moduleDestructors[] = {
 		initializeAbstractSyntaxTreeModule(),
+		initializeAbstractSyntaxTreePrinterModule(),
 		initializeFlexActionsModule(lexicalAnalyzer),
 		initializeBisonActionsModule(&compilerState),
 		initializeFrontendModule(lexicalAnalyzer),
@@ -31,6 +33,7 @@ const int main(const int length, const char ** arguments) {
 	CompilationStatus compilationStatus = executeSyntacticAnalysis();
 	Program * program = compilerState.abstractSyntaxtTree;
 	if (compilationStatus == SUCCEEDED) {
+		printAbstractSyntaxTree(program);
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
 		// @todo Stage III: semantic analysis, before generating the code.

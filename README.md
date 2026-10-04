@@ -23,6 +23,7 @@ Set the following environment variables to control and configure the behaviour o
 | `ENVIRONMENT`         | `Local` | The active environment name. The available environments are: `Local`, `Development` and `Production`.                                                                 |
 | `LOG_IGNORED_LEXEMES` | `true`  | When `true`, logs all of the ignored lexemes found with Flex at `DEBUGGING` level. To remove those logs from the console output set it to `false`.                    |
 | `LOGGING_LEVEL`       | `ALL`   | The minimum level to log in the console output. From lower to higher, the available levels are: `ALL`, `DEBUGGING`, `INFORMATION`, `WARNING`, `ERROR` and `CRITICAL`. |
+| `PRINT_AST`           | `false` | When `true`, prints the AST of every accepted program as an indented tree in the standard output. Combine it with `LOGGING_LEVEL=ERROR` to see only the tree.        |
 
 _Docker Compose_ can read the variables from an `.env` file too (see `compose.yaml` file).
 
