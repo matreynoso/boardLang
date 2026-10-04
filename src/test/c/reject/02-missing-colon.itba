@@ -1,0 +1,12 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture all
+}
+
+piece torre {
+  moves inf straight
+}
+
+player rojo { torre at a1 }
+player azul { pov: N torre at h8 }

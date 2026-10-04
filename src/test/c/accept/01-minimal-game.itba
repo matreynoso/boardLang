@@ -1,0 +1,8 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture all
+}
+
+player rojo { }
+player azul { }

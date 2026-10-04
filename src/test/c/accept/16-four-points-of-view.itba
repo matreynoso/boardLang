@@ -1,0 +1,15 @@
+game {
+  board: 8 x 8
+  cycle: sur oeste norte este
+  win: capture all
+}
+
+piece soldado {
+  moves: 1 front straight
+  moves: 1 front diagonal must replace
+}
+
+player sur { pov: S soldado at d1 }
+player norte { pov: N soldado at e8 }
+player este { pov: E soldado at h4 }
+player oeste { pov: W soldado at a5 }

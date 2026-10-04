@@ -1,0 +1,13 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture 1 caballo
+}
+
+piece caballo {
+  moves: 2 only (front|back) straight & 1 (left|right) straight,
+         2 only (left|right) straight & 1 (front|back) straight can replace
+}
+
+player rojo { caballo at b1 }
+player azul { pov: N caballo at g8 }

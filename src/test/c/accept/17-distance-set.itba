@@ -1,0 +1,12 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture all
+}
+
+piece saltarin {
+  moves: (1|3 only) front straight can replace
+}
+
+player rojo { saltarin at c1 }
+player azul { pov: N saltarin at f8 }

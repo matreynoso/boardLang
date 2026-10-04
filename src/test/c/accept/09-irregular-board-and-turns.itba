@@ -1,0 +1,16 @@
+game {
+  board: 8 x 8
+  blocked: d4, e4, d5, e5
+  edges: wrap
+  cycle: rojo azul
+  turn: move then move
+  win: points 3
+}
+
+piece corredor {
+  value: 1
+  moves: 1 (straight|diagonal) can replace
+}
+
+player rojo { corredor at a1, b1, c1 }
+player azul { pov: N corredor at f8, g8, h8 }

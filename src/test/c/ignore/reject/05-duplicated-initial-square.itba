@@ -1,0 +1,12 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture all
+}
+
+piece corredor {
+  moves: 1 straight
+}
+
+player rojo { corredor at a1 }
+player azul { pov: N corredor at a1 }

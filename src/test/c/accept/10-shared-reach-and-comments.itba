@@ -1,0 +1,13 @@
+/* partida corta */
+game {
+  board: 8 x 8
+  cycle: rojo azul    // el orden es el de turno
+  win: reach e4 with corredor
+}
+
+piece corredor {
+  moves: 1 straight   // un paso ortogonal
+}
+
+player rojo { corredor at a1 }
+player azul { pov: N corredor at h8 }

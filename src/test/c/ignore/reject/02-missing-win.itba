@@ -1,0 +1,7 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+}
+
+player rojo { }
+player azul { }

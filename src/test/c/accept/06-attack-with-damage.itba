@@ -1,0 +1,14 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture 1 catapulta
+}
+
+piece catapulta {
+  health: 3
+  moves: 1 straight
+  attacks: unblocked 3 only (straight|diagonal) damage 2
+}
+
+player rojo { catapulta at a1 }
+player azul { pov: N catapulta at h8 }

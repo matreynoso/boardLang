@@ -1,0 +1,21 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: reach goal with corredor
+}
+
+piece corredor {
+  moves: 1 (straight|diagonal) can replace
+}
+
+player rojo {
+  pov: S
+  goal: h8
+  corredor at a1, b1, c1
+}
+
+player azul {
+  pov: N
+  goal: a1
+  corredor at f8, g8, h8
+}

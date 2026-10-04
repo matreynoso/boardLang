@@ -1,0 +1,13 @@
+player azul { pov: N torre at h8 }
+
+piece torre {
+  moves: inf straight can replace
+}
+
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture 1 torre
+}
+
+player rojo { torre at a1 }

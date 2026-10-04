@@ -1,0 +1,12 @@
+game {
+  board: 30 x 4
+  cycle: rojo azul
+  win: capture all
+}
+
+piece corredor {
+  moves: inf straight can replace
+}
+
+player rojo { corredor at aa2 }
+player azul { pov: N corredor at ad4 }

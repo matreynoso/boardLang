@@ -1,0 +1,50 @@
+/* ============================================================
+   Ajedrez reducido: sin enroque ni en passant.
+   ============================================================ */
+
+game {
+  board: 8 x 8
+  cycle: blanco negro
+  win: capture 1 rey
+}
+
+piece peon {
+  moves: 1 front straight
+  moves: 2 only front straight first move
+  moves: 1 front diagonal must replace
+  promote: dama at last row
+}
+
+piece caballo {
+  moves: 2 only (front|back) straight & 1 (left|right) straight,
+         2 only (left|right) straight & 1 (front|back) straight can replace
+}
+
+piece torre { moves: inf straight can replace }
+piece alfil { moves: inf diagonal can replace }
+piece dama  { moves: inf (straight|diagonal) can replace }
+
+piece rey {
+  moves: 1 (straight|diagonal) can replace
+  royal
+}
+
+player blanco {
+  pov: S
+  torre   at a1, h1
+  caballo at b1, g1
+  alfil   at c1, f1
+  dama    at d1
+  rey     at e1
+  peon    at a2, b2, c2, d2, e2, f2, g2, h2
+}
+
+player negro {
+  pov: N
+  torre   at a8, h8
+  caballo at b8, g8
+  alfil   at c8, f8
+  dama    at d8
+  rey     at e8
+  peon    at a7, b7, c7, d7, e7, f7, g7, h7
+}

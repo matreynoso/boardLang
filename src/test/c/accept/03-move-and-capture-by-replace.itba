@@ -1,0 +1,13 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture all
+}
+
+piece peon {
+  moves: 1 front straight
+  moves: 1 front diagonal must replace
+}
+
+player rojo { peon at d2 }
+player azul { pov: N peon at e7 }

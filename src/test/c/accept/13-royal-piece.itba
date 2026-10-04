@@ -1,0 +1,17 @@
+game {
+  board: 8 x 8
+  cycle: blanco negro
+  win: capture 1 rey
+}
+
+piece rey {
+  moves: 1 (straight|diagonal) can replace
+  royal
+}
+
+piece torre {
+  moves: inf straight can replace
+}
+
+player blanco { rey at e1 torre at a1 }
+player negro { pov: N rey at e8 torre at h8 }

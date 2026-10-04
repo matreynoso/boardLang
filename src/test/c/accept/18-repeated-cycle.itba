@@ -1,0 +1,12 @@
+game {
+  board: 6 x 6
+  cycle: rojo rojo azul
+  win: reach goal with corredor
+}
+
+piece corredor {
+  moves: 1 (straight|diagonal)
+}
+
+player rojo { goal: f6 corredor at a1 }
+player azul { pov: N goal: a1 corredor at f1 }

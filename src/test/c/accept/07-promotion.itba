@@ -1,0 +1,17 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture all
+}
+
+piece peon {
+  moves: 1 front straight
+  promote: dama at last row
+}
+
+piece dama {
+  moves: inf (straight|diagonal) can replace
+}
+
+player rojo { peon at a2 }
+player azul { pov: N peon at h7 }

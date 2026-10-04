@@ -8,6 +8,7 @@
 /.vscode/
 /bin/
 /cache/
+/docs/
 /log/
 /node_modules/
 /obj/

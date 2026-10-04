@@ -1,0 +1,12 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture all
+}
+
+piece a2 {
+  moves: 1 front straight
+}
+
+player rojo { }
+player azul { }

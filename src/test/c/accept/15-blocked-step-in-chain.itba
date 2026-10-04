@@ -1,0 +1,15 @@
+game {
+  board: 9 x 10
+  cycle: rojo negro
+  win: capture all
+}
+
+piece caballo {
+  moves: blocked 1 front straight & 1 front diagonal,
+         blocked 1 back straight & 1 back diagonal,
+         blocked 1 left straight & 1 left diagonal,
+         blocked 1 right straight & 1 right diagonal can replace
+}
+
+player rojo { caballo at b1, h1 }
+player negro { pov: N caballo at b10, h10 }

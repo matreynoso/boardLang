@@ -1,0 +1,15 @@
+game {
+  board: 10 x 10
+  cycle: rojo azul
+  turn: move then optional attack same piece
+  win: capture all
+}
+
+piece arquero {
+  health: 2
+  moves: 1 (straight|diagonal)
+  attacks: 4 straight
+}
+
+player rojo { arquero at c2, e2 }
+player azul { pov: N arquero at d9, f9 }

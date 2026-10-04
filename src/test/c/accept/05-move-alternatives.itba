@@ -1,0 +1,12 @@
+game {
+  board: 8 x 8
+  cycle: rojo azul
+  win: capture 1 dama
+}
+
+piece dama {
+  moves: inf straight, inf diagonal can replace
+}
+
+player rojo { dama at d1 }
+player azul { pov: N dama at d8 }
