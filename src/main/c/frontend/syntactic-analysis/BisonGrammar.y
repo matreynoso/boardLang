@@ -81,11 +81,13 @@ void yyerror(const YYLTYPE * location, const char * message) {}
  * this approach for the AST root node ("program" non-terminal, in this
  * grammar), or it will drop the entire tree even if the parsing succeeds.
  *
- * @todo Phase 4: declare one destructor per pointer type of the union
- *	(including "free($$)" for <string>), except for <program>.
+ * @todo Phase 4: declare one destructor per pointer type of the union for
+ *	the non-terminals, except for <program>.
  *
  * @see https://www.gnu.org/software/bison/manual/html_node/Destructor-Decl.html
  */
+%destructor { free($$); } <string>
+%destructor { destroyPosition($$); } <position>
 
 /** Terminals with a semantic value. */
 %token <integer> INTEGER "integer"

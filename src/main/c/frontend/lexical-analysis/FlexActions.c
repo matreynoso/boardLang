@@ -31,9 +31,30 @@ ModuleDestructor initializeFlexActionsModule(LexicalAnalyzer * lexicalAnalyzer) 
 
 /* PRIVATE FUNCTIONS */
 
+static Position * _createPosition(const char * lexeme);
 static void _logTokenAction(const char * actionName, Token * token);
 static CompilationStatus _throw();
 static const char * _toContextString(const FlexContext context);
+
+/**
+ * Creates a position from a lexeme such as "e4" or "aa2". Columns use
+ * bijective base-26 (i.e., "a" = 1, "z" = 26, "aa" = 27, "zz" = 702), and
+ * rows are the trailing decimal number.
+ */
+static Position * _createPosition(const char * lexeme) {
+	Position * position = calloc(1, sizeof(Position));
+	const char * cursor = lexeme;
+	signed int column = 0;
+	while ('a' <= *cursor && *cursor <= 'z') {
+		column = 26 * column + (*cursor - 'a' + 1);
+		++cursor;
+	}
+	position->column = column;
+	position->row = atoi(cursor);
+	position->lexeme = strdup(lexeme);
+	position->next = NULL;
+	return position;
+}
 
 /**
  * Get the context string of the specified Flex context.
@@ -112,6 +133,15 @@ CompilationStatus EOFLexemeAction() {
 	return status;
 }
 
+CompilationStatus IdentifierLexemeAction() {
+	Token * token = createToken(_lexicalAnalyzer, IDENTIFIER);
+	token->semanticValue->string = strdup(token->lexeme);
+	_logTokenAction(__FUNCTION__, token);
+	CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+	destroyToken(token);
+	return status;
+}
+
 CompilationStatus IgnoredLexemeAction() {
 	if (_logIgnoredLexemes) {
 		Token * token = createToken(_lexicalAnalyzer, IGNORED);
@@ -130,6 +160,14 @@ CompilationStatus IntegerLexemeAction() {
 	return status;
 }
 
+CompilationStatus KeywordLexemeAction(TokenLabel label) {
+	Token * token = createToken(_lexicalAnalyzer, label);
+	_logTokenAction(__FUNCTION__, token);
+	CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+	destroyToken(token);
+	return status;
+}
+
 CompilationStatus LeaveMultilineCommentLexemeAction() {
 	leaveLexicalAnalyzerContext(_lexicalAnalyzer);
 	if (_logIgnoredLexemes) {
@@ -140,7 +178,18 @@ CompilationStatus LeaveMultilineCommentLexemeAction() {
 	return IN_PROGRESS;
 }
 
-CompilationStatus ParenthesisLexemeAction(TokenLabel label) {
+CompilationStatus PositionLexemeAction() {
+	Token * token = createToken(_lexicalAnalyzer, POSITION);
+	Position * position = _createPosition(token->lexeme);
+	token->semanticValue->position = position;
+	_logTokenAction(__FUNCTION__, token);
+	logDebugging(_logger, "Position \"%s\" decoded as column %d, row %d.", position->lexeme, position->column, position->row);
+	CompilationStatus status = pushToken(_lexicalAnalyzer, token);
+	destroyToken(token);
+	return status;
+}
+
+CompilationStatus SymbolLexemeAction(TokenLabel label) {
 	Token * token = createToken(_lexicalAnalyzer, label);
 	_logTokenAction(__FUNCTION__, token);
 	CompilationStatus status = pushToken(_lexicalAnalyzer, token);
