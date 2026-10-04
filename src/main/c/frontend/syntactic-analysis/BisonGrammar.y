@@ -113,7 +113,7 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 %token <token> ATTACK "attack"
 %token <token> WIN "win"
 %token <token> CAPTURE "capture"
-%token <token> ALL "all"
+%token <token> ALL_PIECES "all"
 %token <token> POINTS "points"
 %token <token> REACH "reach"
 %token <token> GOAL "goal"
