@@ -42,14 +42,37 @@ void yyerror(const YYLTYPE * location, const char * message) {}
 	/** Terminals. */
 
 	signed int integer;
+	char * string;
+	Position * position;
 	TokenLabel token;
 
 	/** Non-terminals. */
 
-	Constant * constant;
-	Expression * expression;
-	Factor * factor;
+	Declaration * declaration;
+	Distance * distance;
+	Game * game;
+	GameField * gameField;
+	Identifier * identifier;
+	MoveStep * moveStep;
+	MoveTerm * moveTerm;
+	Piece * piece;
+	PieceClause * pieceClause;
+	Player * player;
+	PlayerField * playerField;
 	Program * program;
+	Region * region;
+	Turn * turn;
+	TurnStep * turnStep;
+	WinCondition * winCondition;
+
+	/** Non-terminals without their own node (flags, modes and options). */
+
+	BlockMode blockMode;
+	bool boolean;
+	EdgeMode edgeMode;
+	PointOfView pointOfView;
+	ReplaceMode replaceMode;
+	unsigned int flags;
 }
 
 /**
@@ -58,63 +81,106 @@ void yyerror(const YYLTYPE * location, const char * message) {}
  * this approach for the AST root node ("program" non-terminal, in this
  * grammar), or it will drop the entire tree even if the parsing succeeds.
  *
+ * @todo Phase 4: declare one destructor per pointer type of the union
+ *	(including "free($$)" for <string>), except for <program>.
+ *
  * @see https://www.gnu.org/software/bison/manual/html_node/Destructor-Decl.html
  */
-%destructor { destroyConstant($$); } <constant>
-%destructor { destroyExpression($$); } <expression>
-%destructor { destroyFactor($$); } <factor>
 
-/** Terminals. */
-%token <integer> INTEGER
-%token <token> ADD "+"
-%token <token> CLOSE_BRACE "}"
-%token <token> CLOSE_COMMENT "*/"
-%token <token> CLOSE_PARENTHESIS ")"
-%token <token> DIV "/"
-%token <token> MUL "*"
+/** Terminals with a semantic value. */
+%token <integer> INTEGER "integer"
+%token <string> IDENTIFIER "identifier"
+%token <position> POSITION "position"
+
+/** Keywords: top-level blocks. */
+%token <token> GAME "game"
+%token <token> PIECE "piece"
+%token <token> PLAYER "player"
+
+/** Keywords: game fields. */
+%token <token> BOARD "board"
+%token <token> TIMES "x"
+%token <token> BLOCKED "blocked"
+%token <token> EDGES "edges"
+%token <token> BOUNDED "bounded"
+%token <token> WRAP "wrap"
+%token <token> CYCLE "cycle"
+%token <token> TURN "turn"
+%token <token> THEN "then"
+%token <token> OPTIONAL "optional"
+%token <token> SAME "same"
+%token <token> MOVE "move"
+%token <token> ATTACK "attack"
+%token <token> WIN "win"
+%token <token> CAPTURE "capture"
+%token <token> ALL "all"
+%token <token> POINTS "points"
+%token <token> REACH "reach"
+%token <token> GOAL "goal"
+%token <token> WITH "with"
+%token <token> CUSTOM "custom"
+
+/** Keywords: piece clauses. */
+%token <token> MOVES "moves"
+%token <token> ATTACKS "attacks"
+%token <token> PROMOTE "promote"
+%token <token> AT "at"
+%token <token> FIRST "first"
+%token <token> LAST "last"
+%token <token> ROW "row"
+%token <token> VALUE "value"
+%token <token> HEALTH "health"
+%token <token> ROYAL "royal"
+%token <token> DAMAGE "damage"
+%token <token> CANT "cant"
+%token <token> CAN "can"
+%token <token> MUST "must"
+%token <token> REPLACE "replace"
+
+/** Keywords: move geometry. */
+%token <token> UNBLOCKED "unblocked"
+%token <token> ONLY "only"
+%token <token> INF "inf"
+%token <token> FRONT "front"
+%token <token> BACK "back"
+%token <token> LEFT "left"
+%token <token> RIGHT "right"
+%token <token> STRAIGHT "straight"
+%token <token> DIAGONAL "diagonal"
+
+/** Keywords: player fields. */
+%token <token> POV "pov"
+%token <token> NORTH "N"
+%token <token> SOUTH "S"
+%token <token> EAST "E"
+%token <token> WEST "W"
+
+/** Symbols. */
 %token <token> OPEN_BRACE "{"
-%token <token> OPEN_COMMENT "/*"
+%token <token> CLOSE_BRACE "}"
+%token <token> COLON ":"
+%token <token> COMMA ","
+%token <token> AMPERSAND "&"
+%token <token> PIPE "|"
 %token <token> OPEN_PARENTHESIS "("
-%token <token> SUB "-"
+%token <token> CLOSE_PARENTHESIS ")"
 
+/** Internal tokens (never used by the grammar rules). */
+%token <token> CLOSE_COMMENT "*/"
+%token <token> OPEN_COMMENT "/*"
 %token <token> EXCEPTION
 %token <token> IGNORED
 %token <token> UNKNOWN
 
 /** Non-terminals. */
-%type <constant> constant
-%type <expression> expression
-%type <factor> factor
 %type <program> program
-
-/**
- * Precedence and associativity.
- *
- * @see https://en.cppreference.com/w/cpp/language/operator_precedence.html
- * @see https://www.gnu.org/software/bison/manual/html_node/Precedence.html
- */
-%left ADD SUB
-%left MUL DIV
 
 %%
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
-program: expression											{ $$ = ExpressionProgramSemanticAction($1); }
-	;
-
-expression: expression[left] ADD expression[right]			{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
-	| expression[left] DIV expression[right]				{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
-	| expression[left] MUL expression[right]				{ $$ = ArithmeticExpressionSemanticAction($left, $right, MULTIPLICATION); }
-	| expression[left] SUB expression[right]				{ $$ = ArithmeticExpressionSemanticAction($left, $right, SUBTRACTION); }
-	| factor												{ $$ = FactorExpressionSemanticAction($1); }
-	;
-
-factor: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS		{ $$ = ExpressionFactorSemanticAction($2); }
-	| constant												{ $$ = ConstantFactorSemanticAction($1); }
-	;
-
-constant: INTEGER											{ $$ = IntegerConstantSemanticAction($1); }
+/** @todo Phase 4: replace this placeholder with the boardLang grammar. */
+program: %empty													{ $$ = NULL; }
 	;
 
 %%
